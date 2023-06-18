@@ -1,3 +1,5 @@
 #!env /bin/bash
 
-sbcl --non-interactive --eval '(asdf:test-system :lisp-site-gen)'
+COMPILE=${LISP:-sbcl}
+
+$COMPILE --non-interactive --eval '(asdf:test-system :lisp-site-gen)'
