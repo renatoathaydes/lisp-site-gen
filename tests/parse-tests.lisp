@@ -9,7 +9,7 @@
   (testing "can parse plain text"
     (let ((output nil))
       (md-parser:parse-markdown-lines '("simple line" "other text") (lambda (o) (push o output)))
-      (ok (equal (reverse output) '("simple line" "other text")))))
+      (ok (equal (reverse output) '((:span "simple line") (:span "other text"))))))
 
   (testing "can parse header 1"
     (let ((output nil))
@@ -40,5 +40,10 @@
     (let ((output nil))
       (md-parser:parse-markdown-lines '(">start" "end") (lambda (o) (push o output)))
       (ok (equal (reverse output) `((:quotation ,(format nil "start~%end")))))))
+
+  (testing "can parse text with emphasis"
+    (let ((output nil))
+      (md-parser:parse-markdown-lines '("hello *world*!!!") (lambda (o) (push o output)))
+      (ok (equal (reverse output) '((:span "hello " (:em "world") "!!!"))))))
 
 )

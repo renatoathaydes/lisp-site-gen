@@ -1,5 +1,5 @@
 (defpackage md-parser
-  (:use :cl :uiop)
+  (:use :cl :uiop :md-span-parser)
   (:export #:parse-markdown #:parse-markdown-lines))
 
 (in-package :md-parser)
@@ -33,7 +33,7 @@
         ((string-prefix-p ">" line) (progn
                                    (setq *md-state* (make-quote-state))
                                    (parse-quote-line (subseq line 1) rcv)))
-        (t (apply rcv (list line)))))
+        (t (funcall rcv (parse-md-span line)))))
 
 (defun parse-next-line (line rcv)
   (ecase (type-of *md-state*)

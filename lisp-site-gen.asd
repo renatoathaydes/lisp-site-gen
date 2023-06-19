@@ -5,7 +5,8 @@
   :license "BSD"
   :pathname "src/"
   :depends-on ()
-  :components ((:file "parse")
+  :components ((:file "parse-md-span")
+               (:file "parse" :depends-on ("parse-md-span"))
                (:static-file "LICENCE" :pathname #P"LICENCE"))
   :in-order-to ((test-op (test-op "lisp-site-gen/tests"))))
 
