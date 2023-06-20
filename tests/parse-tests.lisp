@@ -46,4 +46,15 @@
       (md-parser:parse-markdown-lines '("hello *world*!") (lambda (o) (push o output)))
       (ok (equal (reverse output) '((:span "hello " (:em "world") "!"))))))
 
+  (testing "can parse text with strong"
+    (let ((output nil))
+      (md-parser:parse-markdown-lines '("this is **very** important.") (lambda (o) (push o output)))
+      (ok (equal (reverse output) '((:span "this is " (:strong "very") " important."))))))
+
+  (testing "can parse text with inline code"
+    (let ((output nil))
+      (md-parser:parse-markdown-lines '("`var` or ``var2``") (lambda (o) (push o output)))
+      (ok (equal (reverse output) '((:span (:code "var") " or " (:code "var2")))))))
+
+
 )
