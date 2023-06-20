@@ -7,6 +7,10 @@
 (defstruct quote-state
   (string-lines nil :type list))
 
+(defstruct code-block-state
+  (language "" :type string)
+  (string-lines nil :type list))
+
 (defparameter *md-state* nil)
 
 (defun parse-quote-line (line rcv)
@@ -22,6 +26,20 @@
             (terminate)
             (push line (quote-state-string-lines *md-state*))))))
 
+(defun parse-code-block (line rcv)
+  (flet ((terminate ()
+           (funcall rcv (list
+                         :code-block
+                         (format nil "~{~a~^~%~}"
+                                 (reverse (code-block-state-string-lines *md-state*)))
+                         (code-block-state-language *md-state*)))
+           (setq *md-state* nil)))
+    (if (null line)
+        (terminate)
+        (if (string-prefix-p "```" line)
+            (terminate)
+            (push line (code-block-state-string-lines *md-state*))))))
+
 (defun parse-common-line (line rcv)
   (cond ((string-prefix-p "# " line) (funcall rcv (list :h1 (subseq line 2))))
         ((string-prefix-p "## " line) (funcall rcv (list :h2 (subseq line 3))))
@@ -30,15 +48,19 @@
         ((string-prefix-p "##### " line) (funcall rcv (list :h5 (subseq line 6))))
         ((string-prefix-p "###### " line) (funcall rcv (list :h6 (subseq line 7))))
         ((string-prefix-p "####### " line) (funcall rcv (list :h7 (subseq line 8))))
+        ((string-prefix-p "```" line) (progn
+                                        (setq *md-state* (make-code-block-state
+                                                          :language (string-trim " " (subseq line 3))))))
         ((string-prefix-p ">" line) (progn
-                                   (setq *md-state* (make-quote-state))
-                                   (parse-quote-line (subseq line 1) rcv)))
+                                      (setq *md-state* (make-quote-state))
+                                      (parse-quote-line (subseq line 1) rcv)))
         (t (funcall rcv (parse-md-span line)))))
 
 (defun parse-next-line (line rcv)
   (ecase (type-of *md-state*)
     (null (parse-common-line line rcv))
-    (quote-state (parse-quote-line line rcv))))
+    (quote-state (parse-quote-line line rcv))
+    (code-block-state (parse-code-block line rcv))))
 
 (defun complete-parsing (rcv)
   (ecase (type-of *md-state*)

@@ -52,5 +52,9 @@
            '("`var` or ``var2``")
            '((:span (:code "var") " or " (:code "var2"))))
 
+  (test-md "can parse code block"
+           '("hi" "```lisp" "(def main () (hello))" "(done)" "```")
+           `((:span "hi") (:code-block ,(format nil "(def main () (hello))~%(done)") "lisp")))
+
 
 )
