@@ -18,15 +18,16 @@
   (go-up-to c sym line index rcv))
 
 (defun parse-line (line rcv)
-  (let ((prev-index 0))
-   (loop for i from 0 below (length line) do
-    (let ((next-index (case (char line i)
-                        (#\* (emit-then-go-to #\* :em   line prev-index i rcv))
-                        (#\` (emit-then-go-to #\` :code line prev-index i rcv)))))
-      (when next-index
-        (setf i next-index prev-index next-index)))
-         finally (when (< prev-index (- (length line) 1))
-                   (funcall rcv (subseq line prev-index))))))
+  (let ((prev-index 0)
+        (len (length line)))
+    (loop for i from 0 below len do
+      (let ((next-index (case (char line i)
+                          (#\* (emit-then-go-to #\* :em   line prev-index i rcv))
+                          (#\` (emit-then-go-to #\` :code line prev-index i rcv)))))
+        (when next-index
+          (setf i next-index prev-index next-index)))
+          finally (when (< prev-index len)
+                    (funcall rcv (subseq line prev-index))))))
 
 (defun parse-md-span (line)
   (let ((result nil))

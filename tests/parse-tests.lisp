@@ -43,7 +43,7 @@
 
   (testing "can parse text with emphasis"
     (let ((output nil))
-      (md-parser:parse-markdown-lines '("hello *world*!!!") (lambda (o) (push o output)))
-      (ok (equal (reverse output) '((:span "hello " (:em "world") "!!!"))))))
+      (md-parser:parse-markdown-lines '("hello *world*!") (lambda (o) (push o output)))
+      (ok (equal (reverse output) '((:span "hello " (:em "world") "!"))))))
 
 )
