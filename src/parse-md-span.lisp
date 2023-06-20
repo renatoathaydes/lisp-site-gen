@@ -35,7 +35,13 @@
           finally (when (< prev-index len)
                     (funcall rcv (subseq line prev-index))))))
 
+(defun singleton? (lst)
+  (null (cdr lst)))
+
 (defun parse-md-span (line)
   (let ((result nil))
     (parse-line line (lambda (x) (push x result)))
-    (cons :span (nreverse result))))
+    (cond
+      ((null result) (list :p ""))
+      ((singleton? result) (list :p (car result)))
+      (t (list :p (cons :span (nreverse result)))))))

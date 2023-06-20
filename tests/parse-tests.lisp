@@ -12,9 +12,13 @@
 
 (deftest parse-markdown-text
 
+  (test-md "can parse empty line"
+           '("")
+           '((:p "")))
+
   (test-md "can parse plain text"
            '("simple line" "other text")
-           '((:span "simple line") (:span "other text")))
+           '((:p "simple line") (:p "other text")))
 
   (test-md "can parse header 1"
            '("# hello")
@@ -42,19 +46,19 @@
 
   (test-md "can parse text with emphasis"
            '("hello *world*!")
-           '((:span "hello " (:em "world") "!")))
+           '((:p (:span "hello " (:em "world") "!"))))
 
   (test-md "can parse text with strong"
            '("this is **very** important.")
-           '((:span "this is " (:strong "very") " important.")))
+           '((:p (:span "this is " (:strong "very") " important."))))
 
   (test-md "can parse text with inline code"
            '("`var` or ``var2``")
-           '((:span (:code "var") " or " (:code "var2"))))
+           '((:p (:span (:code "var") " or " (:code "var2")))))
 
   (test-md "can parse code block"
            '("hi" "```lisp" "(def main () (hello))" "(done)" "```")
-           `((:span "hi") (:code-block ,(format nil "(def main () (hello))~%(done)") "lisp")))
+           `((:p "hi") (:code-block ,(format nil "(def main () (hello))~%(done)") "lisp")))
 
 
 )
