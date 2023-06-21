@@ -60,5 +60,12 @@
            '("hi" "```lisp" "(def main () (hello))" "(done)" "```")
            `((:p "hi") (:code-block ,(format nil "(def main () (hello))~%(done)") "lisp")))
 
+)
+
+(deftest parse-markdown-links
+
+  (test-md "can parse simple link"
+           '("go to [description](http://example.org/)")
+           '((:p (:span "go to " (:a "description" "http://example.org/")))))
 
 )
