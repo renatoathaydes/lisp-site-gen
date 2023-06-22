@@ -41,7 +41,7 @@
 (defun emit-link (line rcv start text-end parens-end)
   (let ((text (subseq line start text-end))
         (url (subseq line (+ 2 text-end) parens-end)))
-    (funcall rcv (list :a text url))
+    (funcall rcv (list :a :href url text))
     ;; return the next index for the parser to continue
     (1+ parens-end)))
 
@@ -74,7 +74,15 @@
 (defun singleton? (lst)
   (null (cdr lst)))
 
+(declaim (ftype (function (string) list) parse-md-span))
 (defun parse-md-span (line)
+  "Parse a markdown line, producing a list containing the equivalent HTML
+   s-expression representing the markdown line.
+   The empty line returns `(:p \"\")`
+   A line without any decorations returns a list containing `:p` and a single string.
+   Any decoration in the text line, e.g. \"A **strong** line.\" will return a `:p`
+   followed by a `:span`, then the decorated text, e.g.
+   `(:p (:span \"A \" (:em \"strong\") \" line.\"))`."
   (let ((result nil))
     (parse-line line (lambda (x) (push x result)))
     (cond

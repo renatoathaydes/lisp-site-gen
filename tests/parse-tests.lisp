@@ -66,6 +66,6 @@
 
   (test-md "can parse simple link"
            '("go to [description](http://example.org/)")
-           '((:p (:span "go to " (:a "description" "http://example.org/")))))
+           '((:p (:span "go to " (:a :href "http://example.org/" "description")))))
 
 )
