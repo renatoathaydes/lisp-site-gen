@@ -1,13 +1,13 @@
-(defpackage lisp-site-gen-test
-  (:use :cl :rove :md-parser))
-(in-package :lisp-site-gen-test)
+(defpackage lisp-site-gen.parser-tests
+  (:use :cl :rove :lisp-site-gen.md-parser))
+(in-package :lisp-site-gen.parser-tests)
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :lisp-site-gen)' in your Lisp.
 
 (defmacro test-md (name lines expected)
   `(testing ,name
     (let ((output nil))
-      (md-parser:parse-markdown-lines ,lines (lambda (o) (push o output)))
+      (parse-markdown-lines ,lines (lambda (o) (push o output)))
       (ok (equal (reverse output) ,expected)))))
 
 (deftest parse-markdown-text

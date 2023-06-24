@@ -1,10 +1,10 @@
-(defpackage html-gen
+(defpackage lisp-site-gen.html-gen
   (:use :cl)
   (:import-from :trivia
    :match :guard)
   (:export #:html-generator #:generate-html))
 
-(in-package html-gen)
+(in-package lisp-site-gen.html-gen)
 
 (defun add-attribute (out name &optional value)
   (if value

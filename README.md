@@ -1,10 +1,19 @@
 # Lisp Static Site Generator
 
-This is a Common Lisp System, `lisp-site-gen`, which provides two packages:
+This is a Common Lisp Project that can be used to generate a static website based on Markdown templates
+that can include Lisp expressions, and simple HTML files.
 
-* `md-parser` - Markdown Parser
-* `site-gen`  - Static Site Generator
+## Packages
 
-The `site-gen` package can be used to generate a static website from markdown and HTML files.
+`lisp-site-gen` provides the following packages:
 
-The `md-parser` package is used by `site-gen` to parse markdown, but can also be used separately.
+* `lisp-site-gen.md-parser` - Simplified Markdown Parser.
+* `lisp-site-gen.html-gen` - HTML Generator.
+
+The Parser converts Markdown text files into s-expressions, which can then be fed into the HTML Generator
+(or any other library for HTML generation) to create the final website.
+
+## Sub-systems
+
+* `lisp-site-gen/executable` - utility to run `lisp-site-gen` from the terminal.
+* `lisp-site-gen/tests` - tests based on the [Rove](https://github.com/fukamachi/rove) testing library.

@@ -1,8 +1,8 @@
-(defpackage md-parser
+(defpackage lisp-site-gen.md-parser
   (:use :cl :uiop :md-span-parser)
-  (:export #:parse-markdown #:parse-markdown-lines))
+  (:export #:parse-markdown-file #:parse-markdown-lines))
 
-(in-package :md-parser)
+(in-package :lisp-site-gen.md-parser)
 
 (defstruct quote-state
   (string-lines nil :type list))
@@ -67,6 +67,7 @@
     (null nil)
     (quote-state (parse-quote-line nil rcv))))
 
+(declaim (ftype (function (list (function (list)))) parse-markdown-lines))
 (defun parse-markdown-lines (lines rcv)
   "Parse the markdown lines provided, emitting the output to the rcv function.
    The single argument..."
@@ -75,7 +76,8 @@
       (parse-next-line line rcv))
     (complete-parsing rcv)))
 
-(defun parse-markdown (filename rcv)
+(declaim (ftype (function (string (function (list)))) parse-markdown-file))
+(defun parse-markdown-file (filename rcv)
   "Pasrse the given markdown file, emitting the output to the rcv function."
   (with-open-file (stream filename :if-does-not-exist nil)
     ;; reset md-state every time a new file starts
