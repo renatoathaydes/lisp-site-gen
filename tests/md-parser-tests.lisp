@@ -58,7 +58,7 @@
 
   (test-md "can parse code block"
            '("hi" "```lisp" "(def main () (hello))" "(done)" "```")
-           `((:p "hi") (:code-block ,(format nil "(def main () (hello))~%(done)") "lisp")))
+           `((:p "hi") (:pre (:code :lang "lisp" ,(format nil "(def main () (hello))~%(done)")))))
 
 )
 

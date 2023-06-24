@@ -29,10 +29,11 @@
 (defun parse-code-block (line rcv)
   (flet ((terminate ()
            (funcall rcv (list
-                         :code-block
-                         (format nil "~{~a~^~%~}"
-                                 (reverse (code-block-state-string-lines *md-state*)))
-                         (code-block-state-language *md-state*)))
+                         :pre
+                         (list :code
+                               :lang (code-block-state-language *md-state*)
+                               (format nil "~{~a~^~%~}"
+                                       (reverse (code-block-state-string-lines *md-state*))))))
            (setq *md-state* nil)))
     (if (null line)
         (terminate)

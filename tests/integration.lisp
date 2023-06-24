@@ -20,6 +20,10 @@
                           "<H1>Header</H1>"
                           "<P></P><P>This is a paragraph.</P><P></P>"
                           (format nil "<QUOTATION> Quotes may~%contain multi-line.</QUOTATION>")
-                          "<H2>Something.</H2>"))
+                          "<H2>Something.</H2>"
+                          "<P></P><P><SPAN>This is <CODE>Lisp</CODE> code:</SPAN></P><P></P>"
+                          "<PRE><CODE LANG=\"lisp\">"
+                          (format nil "(defun looks-cool~%    (it-does))")
+                          "</CODE></PRE>"))
 
 )

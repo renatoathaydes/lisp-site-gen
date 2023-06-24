@@ -6,3 +6,10 @@ This is a paragraph.
 contain multi-line.
 
 ## Something.
+
+This is `Lisp` code:
+
+```lisp
+(defun looks-cool
+    (it-does))
+```
