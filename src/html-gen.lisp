@@ -14,28 +14,39 @@
 (defun add-space (out)
   (write-string " " out))
 
-(defmacro add-html-tag-contents-recur (out rest first? &body body)
+(defmacro add-html-tag-contents-recur (out rest &body body)
+  "Recurse into add-html-tag-contents after inserting whitespace
+   and running the given body."
   `(progn
-     (unless ,first? (add-space ,out))
+     (add-space ,out)
      ,@body
-     (add-html-tag-contents ,out ,rest nil)))
+     (add-html-tag-contents ,out ,rest)))
 
-(defun add-html-tag-contents (out lst &optional (first? t))
+(defun add-html-tag-contents (out lst)
   (match lst
+    ;; the empty list
     ((list) (write-string ">" out))
-    ((list content)
-     (if (keywordp content)
-         (add-html-tag-contents-recur out nil nil
-           (add-attribute out content))
-         (format out ">~a" content)))
+    ;; case like (:a :b ...)
     ((guard (list* a b rest)
-            (keywordp a))
-     (add-html-tag-contents-recur out rest first?
+            (and (keywordp a) (keywordp b)))
+     (add-html-tag-contents-recur out (cons b rest)
+       (add-attribute out a)))
+    ;; case like (:a "b" ...)
+    ((guard (list* a b rest)
+            (and (keywordp a) (stringp b)))
+     (add-html-tag-contents-recur out rest
        (add-attribute out a b)))
-    ((list* item rest)
-     (add-html-tag-contents-recur out rest first?
-       (format out "~a" item)))
-    (otherwise (format out "~a" lst))))
+    ;; case like (a (...) ...), a becomes nested content
+    ((guard (list* a b rest)
+            (listp b))
+     (write-string ">" out)
+     (convert-to-html out a)
+     (list-to-html out b)
+     (convert-to-html out rest))
+    ;; any other case, everything becomes nested content
+    ((list* item)
+     (write-string ">" out)
+     (convert-to-html out item))))
 
 (defun html-tag (out tag rest)
   (format out "<~a" tag)
@@ -47,16 +58,17 @@
   (match lst
     ((list* head tail)
      (match head
-       ((or (satisfies keywordp) (satisfies symbolp) (satisfies stringp))
+       ((or (satisfies keywordp) (satisfies symbolp))
         (html-tag out head tail))
        ((satisfies consp)
         (list-to-html out head)
         (convert-to-html out tail))
-       (otherwise (format out "~{~a ~}" lst))))))
+       (otherwise (format out "~{~a~^ ~}" lst))))))
 
-(declaim (ftype (function (stream (or string list))) convert-to-html))
+(declaim (ftype (function (stream (or keyword string list))) convert-to-html))
 (defun convert-to-html (out html)
   (cond
+    ((keywordp html) (html-tag out html nil))
     ((stringp html) (write-string html out))
     ((consp html) (list-to-html out html))
     ((null html) nil)))
