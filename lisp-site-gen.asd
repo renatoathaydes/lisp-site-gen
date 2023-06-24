@@ -3,10 +3,13 @@
   :version "0.1.0"
   :author "Renato Athaydes"
   :license "BSD"
+  :version "0.1.0"
+  :homepage "https://github.com/renatoathaydes/lisp-site-gen"
   :pathname "src/"
-  :depends-on ()
+  :depends-on (:trivia)
   :components ((:file "parse-md-span")
                (:file "parse" :depends-on ("parse-md-span"))
+               (:file "html-gen")
                (:static-file "LICENCE" :pathname #P"LICENCE"))
   :in-order-to ((test-op (test-op "lisp-site-gen/tests"))))
 
