@@ -1,5 +1,8 @@
 (defsystem "lisp-site-gen"
   :description "Common Lisp-based Static Site Generator"
+  :long-description
+  #.(uiop:read-file-string
+     (uiop:subpathname *load-pathname* "README.md"))
   :version "0.1.0"
   :author "Renato Athaydes"
   :license "BSD"
