@@ -81,4 +81,4 @@
 (declaim (ftype (function (stream) (function (list))) html-generator))
 (defun html-generator (out)
   (lambda (html)
-    (generate-html out html)))
+    (convert-to-html out html)))

@@ -26,7 +26,8 @@
 
 (defsystem "lisp-site-gen/tests"
   :pathname "tests/"
-  :depends-on ("lisp-site-gen" "rove")
+  :depends-on ("lisp-site-gen" "lisp-site-gen/executable" "rove")
   :components ((:file "md-parser-tests")
-               (:file "html-gen-tests"))
+               (:file "html-gen-tests")
+               (:file "integration"))
   :perform (test-op (o c) (symbol-call :rove :run c)))
