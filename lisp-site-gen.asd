@@ -9,9 +9,10 @@
   :version "0.1.0"
   :homepage "https://github.com/renatoathaydes/lisp-site-gen"
   :pathname "src/"
-  :depends-on (:trivia)
+  :depends-on (:trivia :cl-ppcre)
   :components ((:file "parse-md-span")
                (:file "md-parser" :depends-on ("parse-md-span"))
+               (:file "html-code-style")
                (:file "html-gen")
                (:static-file "LICENCE" :pathname #P"LICENCE"))
   :in-order-to ((test-op (test-op "lisp-site-gen/tests"))))
@@ -26,8 +27,15 @@
 
 (defsystem "lisp-site-gen/tests"
   :pathname "tests/"
-  :depends-on ("lisp-site-gen" "lisp-site-gen/executable" "rove")
-  :components ((:file "md-parser-tests")
-               (:file "html-gen-tests")
-               (:file "integration"))
-  :perform (test-op (o c) (symbol-call :rove :run c)))
+  :depends-on ("lisp-site-gen"
+               "lisp-site-gen/executable"
+               ;; "lisp-site-gen/language-styles"
+               "fiveam")
+  :components ((:file "all")
+               (:file "md-parser-tests" :depends-on ("all"))
+               (:file "html-gen-tests" :depends-on ("all"))
+               (:file "html-code-style-tests" :depends-on ("all"))
+               (:file "integration" :depends-on ("all")))
+  :perform (test-op (o c)
+                    (symbol-call :fiveam :run!
+                                 (find-symbol* :all-tests :lisp-site-gen.tests))))
