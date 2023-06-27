@@ -6,7 +6,7 @@
 
 (in-package lisp-site-gen.html-code-style)
 
-(defconstant +spaces+ (parse-string "^\\s+"))
+(defvar +spaces+ (parse-string "^\\s+"))
 
 (defgeneric style-code (language text start)
   (:documentation
