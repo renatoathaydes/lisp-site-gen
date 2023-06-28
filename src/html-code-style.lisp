@@ -6,7 +6,7 @@
 
 (in-package lisp-site-gen.html-code-style)
 
-(defvar +spaces+ (parse-string "^\\s+"))
+(defvar +spaces+ (parse-string "\\s+"))
 
 (defgeneric style-code (language text start)
   (:documentation
@@ -28,8 +28,11 @@
 
 (defmethod next-separator (language text start)
   "Default implementation, returns the next whitespace."
-  (scan +spaces+ text :start start))
+  (multiple-value-bind (first last)
+      (scan +spaces+ text :start start)
+    (and first last)))
 
+(declaim (ftype (function (fixnum fixnum fixnum) boolean) within-bounds))
 (defun within-bounds (index start end)
   (and (> index start) (<= index end)))
 
@@ -54,6 +57,7 @@
         (or found-index
             (emit-plain-text-up-to-separator))))))
 
+(declaim (ftype (function (string (or string symbol) (function (list)) &optional fixnum)) style-html))
 (defun style-html (text lang rcv &optional (start 0))
   "Encode plain text into colorized HTML"
   (if (null lang)

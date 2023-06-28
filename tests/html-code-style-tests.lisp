@@ -23,8 +23,9 @@
 ;; setup functions
 
 (defmethod style-code ((language (eql 'mylang)) text start)
-  "Define a test language so we can emit styled output"
-  (let ((index (scan "\\s+" text)))
+  "Define a test language so we can emit styled output.
+   This will style red any text preceeding whitespaces."
+  (let ((index (scan "\\s+" text :start start)))
     (when index (values t "color: red" index))))
 
 ;; tests
@@ -38,8 +39,17 @@
             '(("hello world")))
 
 (test-style styled-text-if-known "emits styled text for known language"
-            "hello world" 'mylang
-            '((:span :style "color: red" "hello") (" world")))
+            "hello " 'mylang
+            '((:span :style "color: red" "hello")
+              (" ")))
+
+(test-style styled-text-if-known2 "emits styled text for known language (longer example)"
+            "hello world foo(bar)" 'mylang
+            '((:span :style "color: red" "hello")
+              (" ")
+              (:span :style "color: red" "world")
+              (" ")
+              ("foo(bar)")))
 
 ;; helper functions
 
