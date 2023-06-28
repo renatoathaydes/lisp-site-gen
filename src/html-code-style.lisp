@@ -2,17 +2,22 @@
   (:use :cl)
   (:import-from :cl-ppcre
    :scan :parse-string)
-  (:export #:style-html #:style-code #:next-separator))
+  (:export #:style-html #:style-code #:next-separator #:*css-class-transform*))
 
 (in-package lisp-site-gen.html-code-style)
 
 (defvar +spaces+ (parse-string "\\s+"))
 
+(defparameter *css-class-transform* (lambda (c) (format nil "hljs-~a" c))
+  "Function to apply to the CSS classes returned by the `style-code` methods.
+   The default function prefixes the classes with `hljs-`, making it possible to use
+   highlight.js themes.")
+
 (defgeneric style-code (language text start)
   (:documentation
    "Get CSS styles for the text starting at `start`.
     The `language` is a symbol, which means it can be specialized on for each language.
-    Return values `t`, the CSS style string, and the end-index of the text the style applies to.
+    Return values `t`, the CSS classes as a string, and the end-index of the text the style applies to.
     Return nil if the text should not be styled."))
 
 (defgeneric next-separator (language text start)
@@ -48,11 +53,13 @@
                         end)))
              (funcall rcv (list (subseq text start found-index)))
              found-index)))
-    (multiple-value-bind (ok style next-index) (style-code lang text start)
+    (multiple-value-bind (ok css-class next-index) (style-code lang text start)
       (let ((found-index
               (when ok
                 (when (within-bounds next-index start end)
-                  (funcall rcv (list :span :style style (subseq text start next-index)))
+                  (funcall rcv (list :span
+                                     :class (funcall *css-class-transform* css-class)
+                                     (subseq text start next-index)))
                   next-index))))
         (or found-index
             (emit-plain-text-up-to-separator))))))
