@@ -1,7 +1,7 @@
 (defpackage lisp-site-gen.html-code-style.tests
   (:use :cl :fiveam)
   (:import-from :lisp-site-gen.html-code-style
-   :style-html :style-code :*css-class-transform*)
+   :style-html :style-code :*css-class-transform* :map-code-style)
   (:import-from :cl-ppcre
    :scan))
 (in-package :lisp-site-gen.html-code-style.tests)
@@ -18,7 +18,7 @@
      ,description
      (let ((output nil) ,@let-vars)
        (style-html ,text ,lang (lambda (o) (push o output)))
-       (is (equal ,expected (reverse output))))))
+       (is (equal ,expected (nreverse output))))))
 
 ;; setup functions
 
@@ -60,6 +60,19 @@
               (" ")
               ("done"))
             :let-vars ((*css-class-transform* #'(lambda (c) c))))
+
+(test code-style-code-blocks
+  "the map-code-style function can wrap a receiver function to transform plain text code blocks
+   into styled HTML code."
+  (let ((result nil))
+    (flet ((receiver (html)
+             (push html result)))
+      (funcall (map-code-style #'receiver) '(:pre (:code :lang "mylang" "foo bar")))
+      (is (equal '((:pre (:code :lang "mylang"
+                         ((:span :class "hljs-red" "foo")
+                          (" ")
+                          ("bar")))))
+                 (nreverse result))))))
 
 ;; helper functions
 

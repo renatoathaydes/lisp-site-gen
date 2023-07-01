@@ -2,9 +2,14 @@
   (:use :cl)
   (:import-from :cl-ppcre
    :scan :parse-string)
-  (:export #:style-html #:style-code #:next-separator #:*css-class-transform*))
+  (:import-from :trivia
+   :match :guard)
+  (:export #:style-html #:style-code #:next-separator
+           #:*css-class-transform* #:map-code-style))
 
 (in-package lisp-site-gen.html-code-style)
+
+;;; CSS classes based on https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#stylable-scopes
 
 (defvar +spaces+ (parse-string "\\s+"))
 
@@ -66,7 +71,14 @@
 
 (declaim (ftype (function (string (or string symbol) (function (list)) &optional fixnum)) style-html))
 (defun style-html (text lang rcv &optional (start 0))
-  "Encode plain text into colorized HTML"
+  "Encode plain text into colorized HTML.
+   Lists of s-expressions representing HTML are emitted by invoking the given `rcv` (receiver)
+   function.
+   The `style-code` generic method is used to style each token. When `style-code` identifies a token,
+   it returns not only its style class, but also its end index, so that the lexer may continue from that
+   point. If `style-code` returns `nil`, the `next-separator` generic method is used to find the next
+   point from which to look for the next token.
+   To implement support for a new language, specialize these two generic methods as appropriate."
   (if (null lang)
       (funcall rcv (list (subseq text start)))
       (let ((lang-sym (or (and (symbolp lang) lang)
@@ -74,3 +86,18 @@
         (loop with index = start and len = (length text)
               while (< index len)
               do (setf index (emit-styled-span text lang-sym rcv index len))))))
+
+(defun map-code-style (rcv)
+  "Wraps a HTML receiving function so that any code block with a specified language
+   may be styled by calling `style-html`.
+   Any other HTML s-expressions are passed to the `rcv` function unmodified."
+  (lambda (html)
+    (match html
+      ((guard (list :pre (list :code :lang lang code))
+              (stringp code))
+       (let ((code-block nil))
+         (flet ((accumulate (h)
+                  (push h code-block)))
+           (style-html code lang #'accumulate)
+           (funcall rcv (list :pre (list :code :lang lang (nreverse code-block)))))))
+      (otherwise (funcall rcv html)))))
