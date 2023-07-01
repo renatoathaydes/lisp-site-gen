@@ -43,5 +43,4 @@
                (:file "html-code-style-tests" :depends-on ("all"))
                (:file "integration" :depends-on ("all")))
   :perform (test-op (o c)
-                    (symbol-call :fiveam :run!
-                                 (find-symbol* :all-tests :lisp-site-gen.tests))))
+                    (symbol-call :lisp-site-gen.tests :run-all!)))
