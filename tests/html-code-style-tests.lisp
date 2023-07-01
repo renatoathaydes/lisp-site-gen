@@ -68,10 +68,11 @@
     (flet ((receiver (html)
              (push html result)))
       (funcall (map-code-style #'receiver) '(:pre (:code :lang "mylang" "foo bar")))
-      (is (equal '((:pre (:code :lang "mylang"
-                         ((:span :class "hljs-red" "foo")
-                          (" ")
-                          ("bar")))))
+      (is (equal '((:pre :class "hljs"
+                    (:code :lang "mylang"
+                     ((:span :class "hljs-red" "foo")
+                      (" ")
+                      ("bar")))))
                  (nreverse result))))))
 
 ;; helper functions

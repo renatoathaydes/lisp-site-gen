@@ -25,6 +25,6 @@
                         (format nil "<QUOTATION> Quotes may~%contain multi-line.</QUOTATION>")
                         "<H2>Something.</H2>"
                         "<P></P><P><SPAN>This is <CODE>Lisp</CODE> code:</SPAN></P><P></P>"
-                        "<PRE><CODE LANG=\"lisp\">"
+                        "<PRE CLASS=\"hljs\"><CODE LANG=\"lisp\">"
                         (format nil "(<SPAN CLASS=\"hljs-keyword\">defun </SPAN>looks-cool~%    (it-does))")
                         "</CODE></PRE>"))

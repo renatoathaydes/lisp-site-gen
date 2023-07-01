@@ -5,13 +5,16 @@
   (:import-from :trivia
    :match :guard)
   (:export #:style-html #:style-code #:next-separator
-           #:*css-class-transform* #:map-code-style))
+           #:*css-class-transform* #:*css-class-pre* #:map-code-style))
 
 (in-package lisp-site-gen.html-code-style)
 
 ;;; CSS classes based on https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#stylable-scopes
 
 (defvar +spaces+ (parse-string "\\s+"))
+
+(defvar *css-class-pre* "hljs"
+  "The CSS class to apply on the the pre tag surrounding a styled code block.")
 
 (defparameter *css-class-transform* (lambda (c) (format nil "hljs-~a" c))
   "Function to apply to the CSS classes returned by the `style-code` methods.
@@ -108,5 +111,5 @@
          (flet ((accumulate (h)
                   (push h code-block)))
            (style-html code lang #'accumulate)
-           (funcall rcv (list :pre (list :code :lang lang (nreverse code-block)))))))
+           (funcall rcv (list :pre :class *css-class-pre* (list :code :lang lang (nreverse code-block)))))))
       (otherwise (funcall rcv html)))))
