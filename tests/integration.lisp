@@ -2,16 +2,19 @@
   (:use :cl :fiveam))
 (in-package :lisp-site-gen.integration-tests)
 
-;; NOTE: To run this test file, execute `(asdf:test-system :lisp-site-gen)' in your Lisp.
+(def-suite integration-suite
+  :description "Tests for the executable system (integration tests)."
+  :in lisp-site-gen.tests:all-tests)
+(in-suite integration-suite)
 
 (defmacro test-main (name description md-file expected)
   `(test ,name
      ,description
      (is (equal
+          ,expected
           (with-output-to-string (str)
             (lisp-site-gen:run '(,md-file) str)
-            str)
-          ,expected))))
+            str)))))
 
 
 (test-main parse-example-md "can parse example.md"
@@ -23,5 +26,5 @@
                         "<H2>Something.</H2>"
                         "<P></P><P><SPAN>This is <CODE>Lisp</CODE> code:</SPAN></P><P></P>"
                         "<PRE><CODE LANG=\"lisp\">"
-                        (format nil "(defun looks-cool~%    (it-does))")
+                        (format nil "(<SPAN CLASS=\"hljs-keyword\">defun </SPAN>looks-cool~%    (it-does))")
                         "</CODE></PRE>"))

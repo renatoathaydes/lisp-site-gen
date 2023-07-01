@@ -17,20 +17,26 @@
                (:static-file "LICENCE" :pathname #P"LICENCE"))
   :in-order-to ((test-op (test-op "lisp-site-gen/tests"))))
 
+(defsystem "lisp-site-gen/languages"
+  :build-operation program-op
+  :pathname "src/languages"
+  :depends-on (:lisp-site-gen :cl-ppcre)
+  :components ((:file "lisp")))
+
 (defsystem "lisp-site-gen/executable"
   :build-operation program-op
   :pathname "bin"
   :build-pathname "lisp-site-gen" ;; shell name
   :entry-point "lisp-site-gen::main" ;; thunk
-  :depends-on ("lisp-site-gen")
+  :depends-on (:lisp-site-gen :lisp-site-gen/languages)
   :components ((:file "main")))
 
 (defsystem "lisp-site-gen/tests"
   :pathname "tests/"
-  :depends-on ("lisp-site-gen"
-               "lisp-site-gen/executable"
-               ;; "lisp-site-gen/language-styles"
-               "fiveam")
+  :depends-on (:lisp-site-gen
+               :lisp-site-gen/executable
+               :lisp-site-gen/languages
+               :fiveam)
   :components ((:file "all")
                (:file "md-parser-tests" :depends-on ("all"))
                (:file "html-gen-tests" :depends-on ("all"))

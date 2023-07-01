@@ -75,10 +75,13 @@
 
 (declaim (ftype (function (stream list)) generate-html))
 (defun generate-html (out html-sexp)
+  "Convert HTML s-expressions into HTML text, sending the output to the provided stream."
   (dolist (item html-sexp)
     (convert-to-html out item)))
 
 (declaim (ftype (function (stream) (function (list))) html-generator))
 (defun html-generator (out)
+  "Returns a function that can be used to consume `md-parser` output,
+   turning HTML s-expressions into actual HTML text which is sent to the provided stream."
   (lambda (html)
     (convert-to-html out html)))

@@ -25,7 +25,7 @@
                  (return (1+ index)))
                (setf escape (char= (char text index) #\BACKSLASH))))))
 
-(defmethod style-code ((language (eql 'lisp)) text start)
+(defmethod style-code ((language (eql :LISP)) text start)
   (let ((index (matches-string text start)))
     (when index (return-from style-code (values t "string" index))))
   (multiple-value-bind (begin end)
@@ -44,7 +44,6 @@
       (scan *lisp-literal* text :start start)
     (when begin (return-from style-code (values t "literal" end)))))
 
-
-(defmethod next-separator ((language (eql 'lisp)) text start)
+(defmethod next-separator ((language (eql :LISP)) text start)
   (multiple-value-bind (start end) (scan *lisp-separator* text :start start)
     (and start end)))

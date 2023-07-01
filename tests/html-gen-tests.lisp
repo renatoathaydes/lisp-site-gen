@@ -51,5 +51,3 @@
 (test-html-gen generate-span-attrs "can generate span with double-nested contents and attributes"
                '((:span (:em "world") (:foo (:bar :at "bcd" "contents"))))
                "<SPAN><EM>world</EM><FOO><BAR AT=\"bcd\">contents</BAR></FOO></SPAN>")
-
-

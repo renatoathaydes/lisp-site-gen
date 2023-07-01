@@ -18,10 +18,15 @@
    The default function prefixes the classes with `hljs-`, making it possible to use
    highlight.js themes.")
 
+(defun make-keyword (name)
+  (if (symbolp name)
+      name
+      (values (intern (string-upcase name) "KEYWORD"))))
+
 (defgeneric style-code (language text start)
   (:documentation
    "Get CSS styles for the text starting at `start`.
-    The `language` is a symbol, which means it can be specialized on for each language.
+    The `language` is a keyword, which means it can be specialized on for each language.
     Return values `t`, the CSS classes as a string, and the end-index of the text the style applies to.
     Return nil if the text should not be styled."))
 
@@ -30,14 +35,18 @@
    "Find the index of the next separator in the text starting at `start`.
     When styling code, if `style-code` does not return a match, this method is called
     in order to find out the next character to continue from.
-    The `language` is a symbol, which means it can be specialized on for each language."))
+    The `language` is a keyword, which means it can be specialized on for each language."))
 
 (defmethod style-code (language text start)
-  "Default implementation, always returns nil."
+  "Default implementation, always returns nil.
+   To specialize this method, use EQL as follows:
+     `(defmethod style-code ((language (eql :LANG-NAME) text start)) ...)`"
   nil)
 
 (defmethod next-separator (language text start)
-  "Default implementation, returns the next whitespace."
+  "Default implementation, returns the next whitespace.
+   To specialize this method, use EQL as follows:
+     `(defmethod next-separator ((language (eql :LANG-NAME) text start)) ...)`"
   (multiple-value-bind (first last)
       (scan +spaces+ text :start start)
     (and first last)))
@@ -82,7 +91,7 @@
   (if (null lang)
       (funcall rcv (list (subseq text start)))
       (let ((lang-sym (or (and (symbolp lang) lang)
-                          (intern (string-upcase lang)))))
+                          (make-keyword lang))))
         (loop with index = start and len = (length text)
               while (< index len)
               do (setf index (emit-styled-span text lang-sym rcv index len))))))

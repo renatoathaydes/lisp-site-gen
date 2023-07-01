@@ -22,7 +22,7 @@
 
 ;; setup functions
 
-(defmethod style-code ((language (eql 'mylang)) text start)
+(defmethod style-code ((language (eql :MYLANG)) text start)
   "Define a test language so we can emit styled output.
    This will style red any text preceeding whitespaces."
   (let ((index (scan "\\s+" text :start start)))
@@ -39,12 +39,12 @@
             '(("hello world")))
 
 (test-style styled-text-if-known "emits styled text for known language"
-            "hello " 'mylang
+            "hello " :MYLANG
             '((:span :class "hljs-red" "hello")
               (" ")))
 
 (test-style styled-text-if-known2 "emits styled text for known language (longer example)"
-            "hello world foo(bar)" 'mylang
+            "hello world foo(bar)" :MYLANG
             '((:span :class "hljs-red" "hello")
               (" ")
               (:span :class "hljs-red" "world")
@@ -53,7 +53,7 @@
 
 (test-style styled-text-if-known-custom-css-transform
             "emits styled text for known language (custom CSS transform)"
-            "begin do done" 'mylang
+            "begin do done" :MYLANG
             '((:span :class "red" "begin")
               (" ")
               (:span :class "red" "do")
