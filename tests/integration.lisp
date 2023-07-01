@@ -26,5 +26,6 @@
                         "<H2>Something.</H2>"
                         "<P></P><P><SPAN>This is <CODE>Lisp</CODE> code:</SPAN></P><P></P>"
                         "<PRE CLASS=\"hljs\"><CODE LANG=\"lisp\">"
-                        (format nil "(<SPAN CLASS=\"hljs-keyword\">defun </SPAN>looks-cool~%    (it-does))")
+                        "(<SPAN CLASS=\"hljs-keyword\">defun </SPAN>"
+                        (format nil "<SPAN CLASS=\"hljs-title\">looks-cool~%    </SPAN>(it-does))")
                         "</CODE></PRE>"))
