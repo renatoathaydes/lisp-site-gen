@@ -16,6 +16,7 @@
             (lisp-site-gen:run '(,md-file) str)
             str)))))
 
+;;; Tests
 
 (test-main parse-example-md "can parse example.md"
            "tests/example.md"
@@ -27,5 +28,6 @@
                         "<P></P><P><SPAN>This is <CODE>Lisp</CODE> code:</SPAN></P><P></P>"
                         "<PRE CLASS=\"hljs\"><CODE LANG=\"lisp\">"
                         "(<SPAN CLASS=\"hljs-keyword\">defun </SPAN>"
-                        (format nil "<SPAN CLASS=\"hljs-title\">looks-cool~%    </SPAN>(it-does))")
+                        (format nil "<SPAN CLASS=\"hljs-title\">looks-cool </SPAN>()~%")
+                        "    (it-does <SPAN CLASS=\"hljs-string\">\"definitely cool!\"</SPAN>))"
                         "</CODE></PRE>"))

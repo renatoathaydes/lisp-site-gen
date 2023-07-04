@@ -10,6 +10,6 @@ contain multi-line.
 This is `Lisp` code:
 
 ```lisp
-(defun looks-cool
-    (it-does))
+(defun looks-cool ()
+    (it-does "definitely cool!"))
 ```
