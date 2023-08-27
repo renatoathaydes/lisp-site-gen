@@ -28,7 +28,7 @@
 
 ;;; Generic Methods
 
-(defgeneric html-style-make (language)
+(defgeneric html-style-make (language-name)
   (:documentation
    "Receives a keyword representing the name of a language and returns
    an instance of a type which specializes the style-code and next-separator methods
@@ -57,11 +57,11 @@
 
 ;;; Default method implementations
 
-(defmethod html-style-make (language)
+(defmethod html-style-make (language-name)
   "Default implementation, returns the language symbol itself.
    To specialize this method for a keyword, use EQL as follows:
      `(defmethod html-style-make ((language (eql :LANG-NAME))) ...)`."
-  language)
+  language-name)
 
 (defmethod style-code (language text start)
   "Default implementation, always returns nil.
